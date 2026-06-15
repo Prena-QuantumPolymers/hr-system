@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+
+<h2>HR Dashboard</h2>
+
+<button onclick="getProfile()">Load Profile</button>
+<button onclick="logout()">Logout</button>
+
+<p id="user"></p>
+
+<script>
+
+// 🔐 PROTECT PAGE
+const token = localStorage.getItem("token");
+
+if (!token) {
+    window.location.href = "login.html";
+}
+
+// 📡 LOAD PROFILE
+async function getProfile() {
+
+    const token = localStorage.getItem("token");
+
+const res = await fetch("http://145.223.96.85:3000/profile", {
+    method: "GET",
+    headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token")
+    }
+});
+    const data = await res.json();
+
+    if (data.user) {
+        document.getElementById("user").innerText =
+            `Welcome ${data.user.email} (${data.user.role})`;
+    } else {
+        document.getElementById("user").innerText =
+            data.message;
+    }
+}
+
+// 🚪 LOGOUT
+function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+}
+
+</script>
+
+</body>
+</html>
